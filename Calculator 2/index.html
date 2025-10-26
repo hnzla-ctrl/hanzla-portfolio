@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Calculator</title>
+    <style>
+        :root {
+            --bg: #f1f3f5;
+            --panel: #ffffff;
+            --primary: #0f172a;
+            /* digits color */
+            --accent: #1e88e5;
+            /* operator */
+            --muted: #6b7280;
+            --glass: rgba(255, 255, 255, 0.6);
+            --shadow: 0 10px 25px rgba(16, 24, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            --radius: 20px;
+            --btn-radius: 14px;
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0b1020;
+            --panel: #0f1724;
+            --primary: #e6eef8;
+            --accent: #4fb3ff;
+            --muted: #9aa6b2;
+            --glass: rgba(255, 255, 255, 0.03);
+            --shadow: 0 10px 30px rgba(2, 6, 23, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.04);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(30, 136, 229, 0.06), transparent 8%), var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background .35s ease, color .25s ease;
+        }
+
+        .container {
+            width: 360px;
+            max-width: 92vw;
+            border-radius: 28px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+            box-shadow: var(--shadow);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px) saturate(120%);
+            border: 1px solid var(--glass-border);
+            transition: box-shadow .3s ease, transform .25s ease;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #7ed0ff);
+            display: grid;
+            place-items: center;
+            color: rgb(0, 0, 0);
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 6px 18px rgba(30, 136, 229, 0.18);
+            font-weight: 900;
+        }
+
+        .title {
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        .screen {
+            background: var(--panel);
+            border-radius: 18px;
+            padding: 16px 18px;
+            min-height: 96px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: background .25s ease, transform .18s cubic-bezier(.2, .9, .3, 1);
+        }
+
+        .expression {
+            font-size: 14px;
+            color: var(--muted);
+            opacity: 0.9;
+            transform: translateY(0);
+            transition: transform .25s ease
+        }
+
+        .value {
+            font-size: 32px;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 0.6px
+        }
+
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px
+        }
+
+        button.key {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 18px;
+            font-size: 18px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, var(--glass), rgba(255, 255, 255, 0.02));
+            box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            color: var(--primary);
+            transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        button.key:active {
+            transform: translateY(3px);
+            filter: brightness(.95)
+        }
+
+        button.key.operator {
+            background: linear-gradient(180deg, rgba(30, 136, 229, 0.12), rgba(30, 136, 229, 0.04));
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        button.key.wide {
+            grid-column: span 2
+        }
+
+        button.key.accent {
+            background: linear-gradient(180deg, var(--accent), #2f9cf0);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(46, 125, 255, 0.16)
+        }
+
+        /* subtle hover for desktop */
+        @media (hover:hover) {
+            button.key:hover {
+                transform: translateY(-4px)
+            }
+        }
+
+        /* small animation for screen updates */
+        .value.updated {
+            animation: pop .28s cubic-bezier(.2, .9, .3, 1)
+        }
+
+        @keyframes pop {
+            0% {
+                transform: translateY(6px) scale(.98);
+                opacity: 0
+            }
+
+            60% {
+                transform: translateY(-6px) scale(1.02);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        /* theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .switch {
+            width: 56px;
+            height: 30px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.02));
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            position: relative;
+            cursor: pointer
+        }
+
+        .knob {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #fff, #f6f8fb);
+            box-shadow: 0 4px 10px rgba(2, 6, 23, 0.12);
+            transform: translateX(0);
+            transition: transform .28s cubic-bezier(.2, .9, .3, 1)
+        }
+
+        [data-theme="dark"] .switch {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01))
+        }
+
+        [data-theme="dark"] .knob {
+            background: linear-gradient(180deg, #0b1220, #111827);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6)
+        }
+
+        [data-theme="dark"] .knob.on {
+            transform: translateX(26px)
+        }
+
+        .knob.on {
+            transform: translateX(26px)
+        }
+
+        /* small helper text */
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 10px
+        }
+
+        /* responsive smaller screens */
+        @media (max-width:420px) {
+            .container {
+                padding: 14px;
+                border-radius: 20px
+            }
+
+            .value {
+                font-size: 28px
+            }
+
+            button.key {
+                padding: 14px;
+                font-size: 16px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">X</div>
+                <div>
+                    <div class="title"></div>
+                    <div style="font-size:11px;color:var(--muted)"> </div>
+                </div>
+            </div>
+            <div class="theme-toggle">
+                <div class="hint" style="font-size:12px;margin-right:8px">Theme-change</div>
+                <div class="switch" id="themeSwitch" role="button" aria-label="Toggle theme">
+                    <div class="knob" id="knob"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen">
+            <div class="expression" id="expression">0</div>
+            <div class="value" id="value">0</div>
+        </div>
+
+        <div class="keyboard" id="keyboard">
+            <button class="key" data-action="clear">AC</button>
+            <button class="key" data-action="sign">+/-</button>
+            <button class="key" data-action="percent">%</button>
+            <button class="key operator" data-action="operator">÷</button>
+
+            <button class="key" data-num="7">7</button>
+            <button class="key" data-num="8">8</button>
+            <button class="key" data-num="9">9</button>
+            <button class="key operator" data-action="operator">×</button>
+
+            <button class="key" data-num="4">4</button>
+            <button class="key" data-num="5">5</button>
+            <button class="key" data-num="6">6</button>
+            <button class="key operator" data-action="operator">−</button>
+
+            <button class="key" data-num="1">1</button>
+            <button class="key" data-num="2">2</button>
+            <button class="key" data-num="3">3</button>
+            <button class="key operator" data-action="operator">+</button>
+
+            <button class="key wide" data-num="0">0</button>
+            <button class="key" data-num=".">.</button>
+            <button class="key accent" data-action="equals">=</button>
+        </div>
+
+        <div class="hint">Tip: you can also use your keyboard (0-9, + - * /, Enter, Backspace)</div>
+    </div>
+
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const app = document.getElementById('app');
+            const screen = document.getElementById('screen');
+            const expressionEl = document.getElementById('expression');
+            const valueEl = document.getElementById('value');
+            const keys = document.getElementById('keyboard');
+            const themeSwitch = document.getElementById('themeSwitch');
+            const knob = document.getElementById('knob');
+
+            // state
+            let current = '0';
+            let previous = null;
+            let operator = null;
+            let waitingForNew = false;
+
+            // theme init from localStorage or system
+            const saved = localStorage.getItem('calc-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            setTheme(theme);
+
+            function setTheme(t) {
+                if (t === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    knob.classList.add('on');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    knob.classList.remove('on');
+                }
+                localStorage.setItem('calc-theme', t);
+            }
+
+            themeSwitch.addEventListener('click', () => {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                setTheme(isDark ? 'light' : 'dark');
+            });
+
+            function updateScreen() {
+                // expression shows previous operation
+                expressionEl.textContent = previous === null ? '' : `${previous} ${operator || ''}`.trim();
+                valueEl.textContent = String(current);
+                // animation
+                valueEl.classList.remove('updated');
+                void valueEl.offsetWidth;
+                valueEl.classList.add('updated');
+            }
+
+            function inputDigit(d) {
+                if (waitingForNew) { current = d; waitingForNew = false; }
+                else if (current === '0' && d !== '.') current = d;
+                else if (current.length > 18) return; // prevent overflow
+                else current = current + d;
+                updateScreen();
+            }
+
+            function inputDot() {
+                if (waitingForNew) { current = '0.'; waitingForNew = false; }
+                else if (!current.includes('.')) current += '.';
+                updateScreen();
+            }
+
+            function clearAll() { current = '0'; previous = null; operator = null; waitingForNew = false; updateScreen(); }
+
+            function toggleSign() {
+                if (current === '0') return;
+                current = current.charAt(0) === '-' ? current.slice(1) : '-' + current;
+                updateScreen();
+            }
+
+            function percent() {
+                current = String(parseFloat(current) / 100);
+                updateScreen();
+            }
+
+            function performOperator(nextOp) {
+                const inputValue = parseFloat(current);
+                if (previous === null) {
+                    previous = inputValue;
+                } else if (operator) {
+                    const result = calculate(previous, inputValue, operator);
+                    previous = result;
+                    current = String(result);
+                }
+                operator = nextOp;
+                waitingForNew = true;
+                updateScreen();
+            }
+
+            function calculate(a, b, op) {
+                if (op === '+') return round(a + b);
+                if (op === '−' || op === '-') return round(a - b);
+                if (op === '×' || op === '*') return round(a * b);
+                if (op === '÷' || op === '/') return b === 0 ? 'Error' : round(a / b);
+                return b;
+            }
+
+            function round(n) {
+                if (typeof n !== 'number' || !isFinite(n)) return 'Error';
+                // limit to 12 significant digits
+                return Math.round((n + Number.EPSILON) * 1e12) / 1e12;
+            }
+
+            function equals() {
+                if (operator === null || previous === null) return;
+                const result = calculate(previous, parseFloat(current), operator);
+                current = String(result);
+                previous = null;
+                operator = null;
+                waitingForNew = true;
+                updateScreen();
+            }
+
+            // handle clicks
+            keys.addEventListener('click', e => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const num = btn.getAttribute('data-num');
+                const action = btn.getAttribute('data-action');
+                if (num !== null) {
+                    if (num === '.') inputDot(); else inputDigit(num);
+                    return;
+                }
+                if (action) {
+                    if (action === 'clear') clearAll();
+                    else if (action === 'sign') toggleSign();
+                    else if (action === 'percent') percent();
+                    else if (action === 'operator') {
+                        const symbol = btn.textContent.trim();
+                        // map typical symbols to internal operators
+                        const map = { '+': '+', '−': '-', '×': '*', '÷': '/' };
+                        performOperator(map[symbol] || symbol);
+                    }
+                    else if (action === 'equals') equals();
+                }
+            });
+
+            // keyboard support
+            window.addEventListener('keydown', e => {
+                if (e.key >= '0' && e.key <= '9') { inputDigit(e.key); e.preventDefault(); }
+                else if (e.key === '.') inputDot();
+                else if (e.key === 'Enter' || e.key === '=') { equals(); e.preventDefault(); }
+                else if (e.key === '+') { performOperator('+'); }
+                else if (e.key === '-') { performOperator('-'); }
+                else if (e.key === '*') { performOperator('*'); }
+                else if (e.key === '/') { performOperator('/'); }
+                else if (e.key === 'Backspace') { // backspace
+                    if (waitingForNew) { return; }
+                    if (current.length === 1) { current = '0'; }
+                    else current = current.slice(0, -1);
+                    updateScreen();
+                }
+                else if (e.key.toLowerCase() === 'c') { clearAll(); }
+            });
+
+            // init
+            updateScreen();
+
+        })();
+    </script>
+</body>
+
+</html>

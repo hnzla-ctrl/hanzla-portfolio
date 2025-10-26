@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>i Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f2f2f4;
+      --panel: #e6e6e8;
+      --primary: #ff9500;
+      --key: #d1d1d6;
+      --key-alt: #f3f3f3;
+      --text: #111;
+      --accent-text: #fff;
+      --glass: rgba(255,255,255,0.6);
+    }
+    [data-theme="dark"]{
+      --bg: #0b0b0c;
+      --panel: #1c1c1d;
+      --primary: #ff9f0a;
+      --key: #2c2c2e;
+      --key-alt: #3a3a3c;
+      --text: #f5f5f7;
+      --accent-text: #0b0b0c;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box;transition:all 0.25s ease}
+    html,body{height:100%}
+    body{
+      margin:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--bg),var(--panel));font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:var(--text);
+      padding:24px;overflow:hidden;
+    }
+
+    .calculator{
+      width:360px;
+      border-radius:36px;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.15));
+      box-shadow:0 10px 30px rgba(0,0,0,0.18);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(0,0,0,0.06);
+      transform:scale(1);
+      animation:fadeIn 0.6s ease both;
+    }
+    [data-theme="dark"] .calculator{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04)}
+
+    .calculator:hover{transform:scale(1.01)}
+
+    .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;animation:slideDown 0.8s ease both}
+    .brand{font-weight:600;letter-spacing:0.5px}
+    .theme-btn{background:transparent;border:0;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--text);font-weight:600;transition:transform 0.2s ease}
+    .theme-btn:hover{transform:rotate(15deg) scale(1.1)}
+
+    .screen{
+      background:var(--panel);
+      border-radius:18px;padding:18px 14px;margin-bottom:18px;
+      box-shadow:inset 0 -4px 10px rgba(0,0,0,0.06);
+      min-height:92px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+      animation:fadeInUp 0.8s ease both;
+    }
+    [data-theme="dark"] .screen{background:transparent}
+
+    .small-display{font-size:14px;opacity:0.65;margin-bottom:6px;transition:opacity 0.3s ease}
+    .main-display{font-size:48px;font-weight:600;line-height:1;animation:blink 0.8s ease both}
+
+    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;animation:fadeInUp 1s ease both}
+    button.key{
+      padding:18px;border-radius:999px;border:0;font-size:20px;font-weight:600;cursor:pointer;user-select:none;box-shadow:0 6px 12px rgba(0,0,0,0.08);transition:all 0.2s ease;
+    }
+    button.key:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+    button.key:active{transform:translateY(1px) scale(0.97)}
+
+    .key.action{background:var(--key);color:var(--text)}
+    .key.alt{background:var(--key-alt);color:var(--text)}
+    .key.op{background:var(--primary);color:var(--accent-text);transition:background 0.3s ease}
+    .key.op:hover{background:#ffad33}
+    .key.zero{grid-column:span 2;text-align:left;padding-left:36px}
+
+    @media (max-width:420px){.calculator{width:320px}.main-display{font-size:40px}}
+
+    button.key:focus{outline:3px solid rgba(0,0,0,0.06)}
+    [data-theme="dark"] button.key:focus{outline:3px solid rgba(255,255,255,0.04)}
+
+    @keyframes fadeIn{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+    @keyframes fadeInUp{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes slideDown{0%{opacity:0;transform:translateY(-20px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes blink{0%{opacity:0;}100%{opacity:1;}}
+
+  </style>
+</head>
+<body>
+  <div class="calculator" id="calc">
+    <div class="top-row">
+      <div class="brand">Calculator</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="theme-btn" id="themeToggle" aria-pressed="false" title="Toggle theme">🌙</button>
+      </div>
+    </div>
+
+    <div class="screen" role="region" aria-label="calculator screen">
+      <div class="small-display" id="history">&nbsp;</div>
+      <div class="main-display" id="display">0</div>
+    </div>
+
+    <div class="keys" role="group" aria-label="calculator keys">
+      <button class="key action" data-action="clear">C</button>
+      <button class="key action" data-action="plusminus">±</button>
+      <button class="key action" data-action="percent">%</button>
+      <button class="key op" data-action="operator" data-value="/">÷</button>
+
+      <button class="key" data-value="7">7</button>
+      <button class="key" data-value="8">8</button>
+      <button class="key" data-value="9">9</button>
+      <button class="key op" data-action="operator" data-value="*">×</button>
+
+      <button class="key" data-value="4">4</button>
+      <button class="key" data-value="5">5</button>
+      <button class="key" data-value="6">6</button>
+      <button class="key op" data-action="operator" data-value="-">−</button>
+
+      <button class="key" data-value="1">1</button>
+      <button class="key" data-value="2">2</button>
+      <button class="key" data-value="3">3</button>
+      <button class="key op" data-action="operator" data-value="+">+</button>
+
+      <button class="key zero" data-value="0">0</button>
+      <button class="key" data-value=".">.</button>
+      <button class="key op" data-action="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const displayEl=document.getElementById('display');
+      const historyEl=document.getElementById('history');
+      const themeBtn=document.getElementById('themeToggle');
+
+      let current='0',previous=null,operator=null,justEvaluated=false;
+
+      const saved=localStorage.getItem('calc-theme');
+      const prefersDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme=saved?saved:(prefersDark?'dark':'light');
+      setTheme(theme);
+
+      function setTheme(t){
+        if(t==='dark'){
+          document.documentElement.setAttribute('data-theme','dark');
+          themeBtn.textContent='☀️';
+          themeBtn.setAttribute('aria-pressed','true');
+        }else{
+          document.documentElement.removeAttribute('data-theme');
+          themeBtn.textContent='🌙';
+          themeBtn.setAttribute('aria-pressed','false');
+        }
+        localStorage.setItem('calc-theme',t);
+      }
+
+      themeBtn.addEventListener('click',()=>{
+        const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+        setTheme(isDark?'light':'dark');
+      });
+
+      function updateDisplay(){
+        displayEl.textContent=formatNumber(current);
+        displayEl.style.animation='blink 0.4s';
+        setTimeout(()=>displayEl.style.animation='',400);
+        historyEl.textContent=previous!==null?`${formatNumber(previous)} ${operator||''}`:'';
+      }
+
+      function formatNumber(v){
+        if(v===Infinity||v===-Infinity)return'Error';
+        if(String(v).length>14){
+          const n=Number(v);
+          return n.toExponential(9).replace(/\+?(-)?0+(?=\d)/,'$1');
+        }
+        return String(v);
+      }
+
+      function inputDigit(d){
+        if(justEvaluated){current='0';justEvaluated=false;}
+        if(current==='0'&&d!=='.')current=d;
+        else if(d==='.'&&current.includes('.'))return;
+        else current=current+d;
+        updateDisplay();
+      }
+
+      function clearAll(){current='0';previous=null;operator=null;justEvaluated=false;updateDisplay();}
+      function togglePlusMinus(){if(current==='0')return;current=String(Number(current)*-1);updateDisplay();}
+      function percent(){current=String(Number(current)/100);updateDisplay();}
+
+      function performOperator(nextOp){
+        const currNum=Number(current);
+        if(previous===null){previous=currNum;}else if(operator){previous=compute(previous,operator,currNum);}
+        operator=nextOp;current='0';updateDisplay();
+      }
+
+      function compute(a,op,b){
+        switch(op){case '+':return a+b;case '-':return a-b;case '*':return a*b;case '/':return b===0?Infinity:a/b;}
+        return b;
+      }
+
+      function evaluate(){
+        const currNum=Number(current);
+        if(operator&&previous!==null){
+          const result=compute(previous,operator,currNum);
+          current=String(result);
+          previous=null;operator=null;justEvaluated=true;
+          updateDisplay();
+        }
+      }
+
+      document.querySelectorAll('.key').forEach(k=>{
+        k.addEventListener('click',()=>{
+          k.style.transform='scale(0.95)';
+          setTimeout(()=>k.style.transform='',150);
+          const v=k.getAttribute('data-value');
+          const action=k.getAttribute('data-action');
+          if(v!==null){inputDigit(v);return;}
+          if(action){
+            switch(action){
+              case 'clear':clearAll();break;
+              case 'plusminus':togglePlusMinus();break;
+              case 'percent':percent();break;
+              case 'operator':performOperator(k.getAttribute('data-value'));break;
+              case 'equals':evaluate();break;
+            }
+          }
+        });
+      });
+
+      window.addEventListener('keydown',(e)=>{
+        if(e.key>='0'&&e.key<='9'){inputDigit(e.key);e.preventDefault();}
+        else if(e.key==='.')inputDigit('.');
+        else if(e.key==='Backspace'){clearAll();e.preventDefault();}
+        else if(e.key==='Enter'||e.key==='='){evaluate();e.preventDefault();}
+        else if(['+','-','*','/'].includes(e.key)){performOperator(e.key);e.preventDefault();}
+        else if(e.key==='%'){percent();e.preventDefault();}
+      });
+
+      updateDisplay();
+    })();
+  </script>
+</body>
+</html>

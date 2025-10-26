@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elite Gaming</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-6JbXCrxT4E8rZxgPT7XemSgqJ4gH8nyIl7Lk3Z0y6h8BbSgG7RgkB+THKtpvUxr0E3cL2ycFd6uVZxdZf8CqKw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="https://img.freepik.com/premium-photo/premium-lightning-user-interface-3d-rendering-isolated-background_150525-440.jpg?semt=ais_hybrid&w=740&q=80" type="image/x-icon">
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="#">
+        Elite<span class="logo-accent">Gaming</span>
+        <span class="lightning">⚡</span>
+      </a>
+    </div>
+
+    <nav class="nav-links">
+      <ul class="desktop-menu">
+        <li><a href="#">All</a></li>
+        <li><a href="#">Monitors</a></li>
+        <li><a href="#">Mouse</a></li>
+        <li><a href="#">Headphones</a></li>
+        <li><a href="#">Keyboards</a></li>
+        <li><a href="#">Components</a></li>
+      </ul>
+
+      <div class="mobile-menu-icon" id="hamburger">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </nav>
+
+    <div class="header-actions">
+      <div class="dropdown">
+        <button id="dropdown-btn">Products ⯆</button>
+        <ul class="dropdown-menu">
+          <li><a href="#">Alienware 240Hz Gaming Monitor</a></li>
+          <li><a href="#">SteelSeries Apex Pro Keyboard</a></li>
+          <li><a href="#">Logitech G502 Gaming Mouse</a></li>
+          <li><a href="#">HyperX Cloud II Headset</a></li>
+          <li><a href="#">ASUS ROG Swift PG259QN</a></li>
+          <li><a href="#">Corsair K95 RGB Platinum</a></li>
+          <li><a href="#">Razer DeathAdder V2</a></li>
+          <li><a href="#">Bose QuietComfort Gaming Headset</a></li>
+          <li><a href="#">NVIDIA RTX 4090 Graphics Card</a></li>
+          <li><a href="#">Corsair iCUE H150i Elite Cooler</a></li>
+          <li><a href="#">G.Skill Trident Z5 RGB 32GB DDR5</a></li>
+          <li><a href="#">Samsung 990 PRO NVMe SSD 2TB</a></li>
+          <li><a href="#">Lian Li O11 Dynamic Evo Case</a></li>
+        </ul>
+      </div>
+
+      <div class="cart-icon" id="cart-btn">
+        <i class="fa-solid fa-cart-shopping"></i>
+         <span id="cart-count">0</span>
+      </div>
+      <div class="theme-toggle" id="theme-toggle">🌙</div>
+    </div>
+  </header>
+
+  <!-- Mobile Dropdown -->
+  <div class="mobile-dropdown hidden" id="mobileDropdown">
+    <ul>
+      <li><a href="#">All</a></li>
+      <li><a href="#">Monitors</a></li>
+      <li><a href="#">Mouse</a></li>
+      <li><a href="#">Headphones</a></li>
+      <li><a href="#">Keyboards</a></li>
+      <li><a href="#">Components</a></li>
+    </ul>
+  </div>
+
+  <section class="hero">
+    <h1>Level Up Your Battle Station</h1>
+    <p>Premium accessories to dominate the game. Monitors, keyboards, mice, and more.</p>
+  </section>
+
+  <main>
+    <section id="products-container" class="products-grid"></section>
+
+    <section class="featured-deal">
+      <h2>Featured Deals</h2>
+      <div class="featured-grid">
+        <div class="deal-card glass">
+          <img
+            src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4090/geforce-ada-4090-web-og-1200x630.jpg"
+            alt="RTX 4090">
+          <div class="deal-info">
+            <h3>RTX 4090 Graphics Card</h3>
+            <p>Unleash next-level performance. 24GB GDDR6X.</p>
+            <button onclick="addToCart(100)">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="deal-card glass">
+          <img src="https://cdn.mos.cms.futurecdn.net/fiXaYnYWnHHAgpM8zj2sUZ-1200-80.jpg" alt="ASUS Motherboard">
+          <div class="deal-info">
+            <h3>Amd Ryzen 9 9800x3d</h3>
+            <p>Top-tier gaming board with DDR5 and PCIe 5.0.</p>
+            <button onclick="addToCart(101)">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="deal-card glass">
+          <img src="https://media.overclock3d.net/2024/11/RTX-5090.jpg" alt="RAM">
+          <div class="deal-info">
+            <h3>Nvidia GeForce RTX 5090</h3>
+            <p>Blazing fast memory with stunning RGB design.</p>
+            <button onclick="addToCart(103)">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="deal-card glass">
+          <img src="https://m.media-amazon.com/images/I/71r30DCMNFL._UF1000,1000_QL80_.jpg" alt="Liquid Cooler">
+          <div class="deal-info">
+            <h3>Generic Tempered Glass Gaming PC Case</h3>
+            <p>Triple-fan liquid cooler with RGB brilliance.</p>
+            <button onclick="addToCart(102)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2>Gamers Response</h2>
+      <div class="testimonial-cards">
+        <div class="testimonial">
+          <p>"The monitor I ordered has insane clarity — never going back."</p>
+          <span>— Alex R.</span>
+        </div>
+        <div class="testimonial">
+          <p>"Keyboard feel is great, lighting perfect. Everything top-notch."</p>
+          <span>— Sara K.</span>
+        </div>
+        <div class="testimonial">
+          <p>"Customer service helped me pick the right mouse. Best experience."</p>
+          <span>— Juan P.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="cart-modal" class="modal hidden">
+    <div class="modal-content glass">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <p>Total: $<span id="cart-total">0</span></p>
+      <button id="close-cart">Close</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Elite Gaming. All rights reserved.</p>
+      <div class="socials">
+        <a href="#">Discord</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

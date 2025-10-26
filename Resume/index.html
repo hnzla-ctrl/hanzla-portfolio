@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Syed Hanzlah Bukhari — Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter Tight', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #05060a;
+            color: #f5f5f5;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        canvas#particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(5, 6, 10, 0.85);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            padding: 22px 10px;
+            border-bottom: 1px solid rgba(180, 180, 180, 0.15);
+            z-index: 10;
+        }
+
+        header h1 {
+            color: #d4af37;
+            font-size: 2rem;
+        }
+
+        header p {
+            color: #bbb;
+        }
+
+        main {
+            width: 90%;
+            max-width: 900px;
+            margin: 60px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .8s ease, transform .8s ease, box-shadow .3s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        h2 {
+            color: #d4af37;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            border-left: 3px solid #888;
+            padding-left: 10px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: #f0d27c;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 25px 10px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            color: #bbb;
+            font-size: 0.9rem;
+            background: rgba(5, 6, 10, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        footer span {
+            color: #d4af37;
+        }
+
+        @media(max-width:768px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            main {
+                gap: 30px;
+            }
+
+            section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particle-bg"></canvas>
+
+    <header>
+        <h1>Syed Hanzlah Bukhari</h1>
+        <p>Front-End Developer & Creative Professional</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Summary</h2>
+            <p>Motivated and reliable individual with good communication skills and a positive attitude toward teamwork.
+                I value professionalism, punctuality, and attention to detail. Always eager to learn and adapt while
+                giving my best in every task.</p>
+        </section>
+
+        <section>
+            <h2>Skills</h2>
+            <ul style="list-style-type:disc ;">
+                <li>Good Communication Skills (Urdu & English)</li>
+                <li>Front-End Development (HTML, CSS, Bootstrap)</li>
+                <li>UI/UX Designing</li>
+                <li>Video/Photo Editing (basic)</li>
+                <li>Graphic Designing (Basic)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Education</h2>
+            <ul style="list-style-type:disc ;">
+                <li>Matric cleared from Muslim School System.</li>
+
+                <li>Intermediate degree (IN PROGRESS) from Punjab Group of Colleges.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Course</h2>
+            <p>Web Development (IN PROGRESS)</p>
+        </section>
+
+        <section>
+            <h2>Experience</h2>
+            <p>No formal experience yet, but highly motivated to contribute and learn in a professional environment.
+                Skilled at adapting quickly, collaborating with teams, and taking initiative. Eager to gain hands-on
+                experience and develop practical skills while delivering quality results.</p>
+        </section>
+
+        <section>
+            <h2>Languages</h2>
+            <ul style="list-style-type:disc ;"></ul>
+                <li>Urdu</li>
+                <li>English</li>
+                <li>Punjabi</li>
+                <li>Seraiki</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:hanzlasyed7@gmail.com">hanzlasyed7@gmail.com</a></p>
+            <p>Phone: 0325-4525235</p>
+            <p>Address: Ruknabad, BWP Road, Multan</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© <span>Syed Hanzlah Bukhari</span> — All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // === Fade-in on scroll ===
+        const sections = document.querySelectorAll("section");
+        const reveal = () => {
+            const trigger = window.innerHeight * 0.85;
+            sections.forEach(s => {
+                if (s.getBoundingClientRect().top < trigger) s.classList.add("visible");
+            });
+        };
+        window.addEventListener("scroll", reveal);
+        reveal();
+
+        // === Particle Field Background ===
+        const canvas = document.getElementById("particle-bg");
+        const ctx = canvas.getContext("2d");
+        let w, h;
+        let particles = [];
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    alpha: Math.random() * 0.5 + 0.3
+                });
+            }
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = w;
+                if (p.x > w) p.x = 0;
+                if (p.y < 0) p.y = h;
+                if (p.y > h) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212,175,55,${p.alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+
+</html>
